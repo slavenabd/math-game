@@ -6,6 +6,7 @@ const totalPossibleQuestions = 20;
 let incorrectAnswers = [];
 let questionSet = new Set(); // Stores keys like "op,num1,num2" for uniqueness check
 let questionsHistory = []; // Stores question objects in order
+let isProcessing = false; // Flag to prevent multiple inputs during delay
 
 const questionElement = document.getElementById('question');
 const typedAnswerElement = document.getElementById('typed-answer');
@@ -168,6 +169,7 @@ function startGame() {
     incorrectAnswers = [];
     questionSet.clear();
     questionsHistory = [];
+    isProcessing = false;
     startTime = new Date();
     playAgainButton.style.display = 'none';
     startOverButton.style.display = 'block';
@@ -195,6 +197,8 @@ function updateProgressBar() {
 }
 
 document.addEventListener('keydown', (event) => {
+    if (isProcessing) return; // Block input while processing answer
+
     if (event.key >= '0' && event.key <= '9') {
         // Append the pressed number to the current answer
         currentAnswer += event.key;
@@ -210,11 +214,15 @@ document.addEventListener('keydown', (event) => {
 });
 
 function checkAnswer() {
+    if (isProcessing) return; // Guard clause
+
     const userAnswer = parseInt(currentAnswer, 10);
     // Allow empty answer to count as wrong? Or do nothing?
     // Current logic: parseInt('') is NaN.
     if (isNaN(userAnswer) && currentAnswer !== '') return; // Should allow 0? parseInt('0') is 0.
     
+    isProcessing = true; // Set flag to block subsequent inputs
+
     let isCorrect = false;
     if (userAnswer === currentQuestion.answer) {
         score++;
@@ -239,6 +247,7 @@ function checkAnswer() {
         if (totalQuestions < totalPossibleQuestions) {
             resultElement.textContent = ''; // Clear the result message
             generateQuestion();
+            isProcessing = false; // Re-enable input
         } else {
             endGame();
         }
