@@ -166,3 +166,21 @@ body {
 #save-settings:hover {
     background-color: #45a049;
 }
+
+footer {
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.8em;
+    color: #666;
+}
+
+footer a {
+    color: #008CBA;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
