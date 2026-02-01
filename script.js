@@ -170,6 +170,7 @@ function startGame() {
     questionsHistory = [];
     startTime = new Date();
     playAgainButton.style.display = 'none';
+    startOverButton.style.display = 'block';
     whereToImproveElement.style.display = 'none';
     resultElement.textContent = ''; // Clear the result message
     scoreElement.textContent = `Score: ${score}`; // Reset the score display
@@ -249,6 +250,7 @@ function endGame() {
     const timeTaken = Math.floor((endTime - startTime) / 1000) - totalQuestions * 2; // Subtract 2 seconds per question
     resultElement.textContent = `Game Over! You scored ${score} out of ${totalQuestions} in ${timeTaken} seconds.`;
     playAgainButton.style.display = 'block'; // Show the Play Again button
+    startOverButton.style.display = 'none';
     displayWhereToImprove();
 }
 
