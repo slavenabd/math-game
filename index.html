@@ -7,6 +7,37 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <button id="settings-btn">Settings</button>
+    <div id="settings-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Game Settings</h2>
+            
+            <div class="setting-group">
+                <label>Number Range:</label>
+                <input type="number" id="min-val" value="0" min="0"> to 
+                <input type="number" id="max-val" value="20" min="1">
+            </div>
+            
+            <div class="setting-group">
+                <label>Operations:</label>
+                <div>
+                    <input type="checkbox" id="op-add" checked> <label for="op-add">Addition (+)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="op-sub"> <label for="op-sub">Subtraction (-)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="op-mul"> <label for="op-mul">Multiplication (*)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="op-div"> <label for="op-div">Division (/)</label>
+                </div>
+            </div>
+
+            <button id="save-settings">Save & Restart</button>
+        </div>
+    </div>
     <div id="game-container">
         <div id="progress-bar"></div>
         <h1>Math Game</h1>
