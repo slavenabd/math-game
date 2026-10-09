@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Owl mascot, drawn for the Math Game. Used for icons and the link preview. -->
+  <g>
+    <!-- ear tufts -->
+    <path d="M150 150 L128 52 L222 118 Z" fill="#7a4a24"/>
+    <path d="M362 150 L384 52 L290 118 Z" fill="#7a4a24"/>
+    <!-- body -->
+    <ellipse cx="256" cy="282" rx="150" ry="176" fill="#9c6233"/>
+    <!-- wings -->
+    <ellipse cx="118" cy="318" rx="44" ry="104" fill="#7a4a24" transform="rotate(12 118 318)"/>
+    <ellipse cx="394" cy="318" rx="44" ry="104" fill="#7a4a24" transform="rotate(-12 394 318)"/>
+    <!-- belly -->
+    <ellipse cx="256" cy="350" rx="92" ry="104" fill="#f6dfb8"/>
+    <path d="M216 330 q20 16 40 0 q20 16 40 0 M206 372 q25 16 50 0 q25 16 50 0 M222 412 q17 13 34 0 q17 13 34 0"
+          fill="none" stroke="#d9b98a" stroke-width="8" stroke-linecap="round"/>
+    <!-- eyes -->
+    <circle cx="196" cy="214" r="66" fill="#f6dfb8"/>
+    <circle cx="316" cy="214" r="66" fill="#f6dfb8"/>
+    <circle cx="196" cy="214" r="50" fill="#fff"/>
+    <circle cx="316" cy="214" r="50" fill="#fff"/>
+    <circle cx="204" cy="220" r="28" fill="#2d2a4a"/>
+    <circle cx="308" cy="220" r="28" fill="#2d2a4a"/>
+    <circle cx="214" cy="208" r="10" fill="#fff"/>
+    <circle cx="318" cy="208" r="10" fill="#fff"/>
+    <!-- beak -->
+    <path d="M256 250 L232 280 Q256 318 280 280 Z" fill="#ff9f1c"/>
+    <!-- feet -->
+    <g fill="#ff9f1c">
+      <ellipse cx="214" cy="458" rx="30" ry="14"/>
+      <ellipse cx="298" cy="458" rx="30" ry="14"/>
+    </g>
+  </g>
+</svg>

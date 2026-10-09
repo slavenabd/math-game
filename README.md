@@ -60,9 +60,15 @@ How questions are made:
 | `Enter` | submit the answer, or start / continue |
 | `Esc` or `P` | pause / resume |
 
-## Tip: add it to the home screen
+## Install it & play offline
 
-On a phone, open the game in the browser and choose **Share → Add to Home Screen** (iPhone) or **⋮ → Add to Home screen** (Android). It then opens full screen like an app.
+On a phone, open the game in the browser and choose **Share → Add to Home Screen** (iPhone) or **⋮ → Install app / Add to Home screen** (Android). It gets an owl icon and opens full screen like an app.
+
+After the first visit the game also works **without internet**, e.g. in the car. A service worker (`sw.js`) keeps a copy of the files. After you publish an update, devices pick it up in the background and show the new version on the next visit.
+
+## Privacy
+
+The game collects nothing, has no ads and needs no sign-up. Progress stays only in the browser on each device. Everything, including the font, is served from this site, so the game doesn't contact any other service.
 
 ## Running locally
 
@@ -80,8 +86,16 @@ It's a static site (`index.html`, `styles.css`, `script.js`) with no build step.
   ```
   Then open `http://localhost:5000`.
 
+  Because of the offline cache, after editing a file you may need to reload twice (or use a hard reload) to see the change.
+
 Progress (players, settings, scores, trophies) is saved in the browser's local storage on each device. To start a player over, tap their name (or ✏️) → **↺ Reset progress**. This clears scores, stars, trophies and saved mistakes, and keeps the name and settings.
 
 ## Technologies
 
-HTML, CSS and vanilla JavaScript. Sounds are generated with the Web Audio API, read‑aloud uses the Web Speech API, and confetti is drawn on a canvas. There are no dependencies apart from the Fredoka font from Google Fonts.
+HTML, CSS and vanilla JavaScript. Sounds are generated with the Web Audio API, read‑aloud uses the Web Speech API, and confetti is drawn on a canvas. There are no dependencies. The [Fredoka](https://github.com/hafontia/Fredoka-One) font (SIL Open Font License, see `fonts/OFL.txt`) is included in `fonts/`.
+
+## Sharing
+
+Links to the game show a preview card with the owl in Viber, WhatsApp, Facebook and Messenger (`og-image.png`, the `og:` tags in `index.html`). The preview tags use the full address `https://14112519.xyz/`, so if the game moves to a new domain, update those two `og:` URLs and `CNAME`.
+
+The icons in `icons/` are made from `icons/owl.svg`.

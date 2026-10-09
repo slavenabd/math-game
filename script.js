@@ -573,6 +573,8 @@ function showScreen(name) {
 // ---------- Language ----------
 function applyLanguage() {
     document.documentElement.lang = lang;
+    document.title = `${t('titleA')}${lang === 'hr' ? '' : ' '}${t('titleB')}`;
+    $('meta[name="apple-mobile-web-app-title"]').content = document.title;
     el.langSelect.value = lang;
     $$('[data-i18n]').forEach(node => { node.textContent = t(node.dataset.i18n); });
     $('#player-name').placeholder = t('namePh');
@@ -1356,3 +1358,8 @@ if (canSpeak) speechSynthesis.getVoices();
 
 saveStore();
 applyLanguage();
+
+// Offline support: cache the game so it also works without internet
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
