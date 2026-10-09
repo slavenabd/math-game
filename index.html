@@ -2,60 +2,218 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#7c5cff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Math Game">
     <title>Math Game</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦉</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <button id="settings-btn">Settings</button>
-    <div id="settings-modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Game Settings</h2>
-            
-            <div class="setting-group">
-                <label>Number Range:</label>
-                <input type="number" id="min-val" value="0" min="0"> to 
-                <input type="number" id="max-val" value="20" min="1">
-            </div>
-            
-            <div class="setting-group">
-                <label>Operations:</label>
-                <div>
-                    <input type="checkbox" id="op-add" checked> <label for="op-add">Addition (+)</label>
-                </div>
-                <div>
-                    <input type="checkbox" id="op-sub"> <label for="op-sub">Subtraction (-)</label>
-                </div>
-                <div>
-                    <input type="checkbox" id="op-mul"> <label for="op-mul">Multiplication (*)</label>
-                </div>
-                <div>
-                    <input type="checkbox" id="op-div"> <label for="op-div">Division (/)</label>
-                </div>
-            </div>
+<div id="app">
 
-            <button id="save-settings">Save & Restart</button>
+    <!-- HOME -->
+    <section id="screen-home" class="screen active">
+        <header class="home-header">
+            <div class="players" id="players"></div>
+            <select class="lang-select" id="lang-select" aria-label="Language">
+                <option value="en">🇬🇧 EN</option>
+                <option value="hr">🇭🇷 HR</option>
+            </select>
+            <button class="icon-btn" id="btn-settings" aria-label="Settings">⚙️</button>
+        </header>
+
+        <div class="hero">
+            <div class="mascot bob">🦉</div>
+            <h1 class="title"><span data-i18n="titleA">Math</span><span class="t2" data-i18n="titleB">Game</span></h1>
+            <p class="greeting"><span id="greeting"></span>
+                <button class="link-btn" id="btn-edit-player" aria-label="Edit player">✏️</button></p>
         </div>
-    </div>
-    <div id="game-container">
-        <div id="progress-bar"></div>
-        <h1>Math Game</h1>
-        <div id="instructions">Provide your answer by typing the numbers and hitting Enter. Use Backspace to correct.</div>
-        <div id="question">15 + 7 = ?</div>
-        <div id="typed-answer"></div>
-        <div id="result"></div>
-        <div id="score">Score: 0</div>
-        <button id="start-over">Start Over</button>
-        <button id="play-again" style="display: none;">Play New Game</button>
-        <div id="where-to-improve" style="display: none;">
-            <h2>Where to Improve</h2>
-            <ul id="improvement-list"></ul>
+
+        <button class="btn btn-play" id="btn-play" data-i18n="play">▶ Play</button>
+        <button class="settings-summary" id="settings-summary"></button>
+
+        <div class="stats-row" id="home-stats"></div>
+
+        <section class="card trophies-card">
+            <h2><span data-i18n="trophies">Trophies</span> <span class="muted" id="trophy-count"></span></h2>
+            <div class="trophy-grid" id="trophy-grid"></div>
+            <p class="trophy-desc" id="trophy-desc"></p>
+        </section>
+
+        <footer>
+            <p>GitHub: <a href="https://github.com/slavenabd/math-game" target="_blank" rel="noopener">slavenabd/math-game</a></p>
+        </footer>
+    </section>
+
+    <!-- GAME -->
+    <section id="screen-game" class="screen">
+        <div class="topbar">
+            <button class="icon-btn small" id="btn-pause" aria-label="Pause">⏸</button>
+            <div class="chip" id="round-chip"></div>
+            <div class="chip streak" id="streak-chip" hidden>🔥 <span id="streak-val">0</span></div>
+            <div class="chip score">⭐ <span id="score-val">0</span></div>
         </div>
+        <div class="progress" id="progress"></div>
+        <div class="timer" id="timer"><div class="timer-fill" id="timer-fill"></div></div>
+
+        <div class="stage">
+            <div class="mascot small" id="game-mascot">🦉</div>
+            <div class="question-card" id="question-card">
+                <span id="q-text"></span>
+                <span class="answer-slot" id="answer-slot"></span>
+            </div>
+            <div class="feedback" id="feedback"></div>
+            <div class="float-layer" id="float-layer"></div>
+        </div>
+
+        <div class="keypad" id="keypad">
+            <button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button>
+            <button data-key="4">4</button><button data-key="5">5</button><button data-key="6">6</button>
+            <button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
+            <button data-key="Backspace" class="key-back" aria-label="Delete">⌫</button>
+            <button data-key="0">0</button>
+            <button data-key="Enter" class="key-enter" aria-label="Enter">✓</button>
+        </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="screen-results" class="screen">
+        <div class="results card">
+            <div class="mascot big bob">🦉</div>
+            <h1 id="res-title"></h1>
+            <p class="muted" id="res-sub"></p>
+            <div class="stars" id="res-stars"></div>
+            <div class="res-score"><span id="res-score">0</span> <span id="res-points"></span></div>
+            <div class="badge-best" id="res-best" hidden data-i18n="newBest">🏅 New best score!</div>
+            <div class="stats-row" id="res-stats"></div>
+            <div class="new-trophies" id="res-trophies"></div>
+            <div class="tricky" id="res-tricky"></div>
+            <div class="btn-row">
+                <button class="btn btn-secondary" id="btn-home" data-i18n="home">🏠 Home</button>
+                <button class="btn btn-primary" id="btn-again" data-i18n="again">↻ Play again</button>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- OVERLAYS -->
+<div class="overlay" id="countdown" hidden><div class="count-num" id="count-num">3</div></div>
+
+<div class="overlay dim" id="round-overlay" hidden>
+    <div class="card pop-card">
+        <div class="mascot big">🦉</div>
+        <h2 id="round-title"></h2>
+        <p id="round-text"></p>
+        <button class="btn btn-primary" id="btn-round-go" data-i18n="letsGo">Let's go!</button>
     </div>
-    <script src="script.js"></script>
-    <footer>
-        <p>GitHub Repository: <a href="https://github.com/slavenabd/math-game" target="_blank">slavenabd/math-game</a></p>
-    </footer>
+</div>
+
+<div class="overlay dim" id="pause-overlay" hidden>
+    <div class="card pop-card">
+        <h2 data-i18n="paused">Paused ⏸</h2>
+        <p data-i18n="pausedText">Take a break. The timer is stopped.</p>
+        <button class="btn btn-primary" id="btn-resume" data-i18n="resume">▶ Continue</button>
+        <button class="btn btn-secondary" id="btn-quit" data-i18n="quit">Quit game</button>
+    </div>
+</div>
+
+<div class="overlay dim" id="settings-modal" hidden>
+    <div class="card modal">
+        <button class="close-btn" data-close aria-label="Close">×</button>
+        <h2 id="settings-title"></h2>
+
+        <div class="setting">
+            <label data-i18n="quickStart">Quick start</label>
+            <div class="presets">
+                <button type="button" data-preset="0,10,+-,1">0–10 &nbsp;+ −</button>
+                <button type="button" data-preset="0,20,+-,1">0–20 &nbsp;+ −</button>
+                <button type="button" data-preset="0,100,+-,1">0–100 &nbsp;+ −</button>
+                <button type="button" data-preset="1,10,*/,0" data-i18n="timesTables">Times tables × ÷</button>
+            </div>
+        </div>
+
+        <div class="setting two">
+            <div>
+                <label for="set-questions" data-i18n="questions">Questions</label>
+                <select id="set-questions">
+                    <option>5</option><option>10</option><option>15</option><option>20</option><option>30</option>
+                </select>
+            </div>
+            <div>
+                <label for="set-seconds" data-i18n="timePer">Time per question</label>
+                <select id="set-seconds"></select>
+            </div>
+        </div>
+
+        <div class="setting">
+            <label data-i18n="numbersFrom">Numbers from</label>
+            <div class="range-row">
+                <input type="number" id="set-min" inputmode="numeric" min="0" max="999">
+                <span data-i18n="to">to</span>
+                <input type="number" id="set-max" inputmode="numeric" min="1" max="999">
+            </div>
+            <label class="toggle range-limit"><input type="checkbox" id="set-limit"><span>
+                <span><span data-i18n="limitAnswers">🎯 Answers must stay inside the number range</span>
+                <small class="hint" data-i18n="limitHint">e.g. 0–20: 13 + 7 ✓ &nbsp; 13 + 8 ✗</small></span>
+            </span></label>
+        </div>
+
+        <div class="setting">
+            <label data-i18n="operations">Operations</label>
+            <div class="ops">
+                <label class="op-tile"><input type="checkbox" value="+"><span>+</span></label>
+                <label class="op-tile"><input type="checkbox" value="-"><span>−</span></label>
+                <label class="op-tile"><input type="checkbox" value="*"><span>×</span></label>
+                <label class="op-tile"><input type="checkbox" value="/"><span>÷</span></label>
+            </div>
+        </div>
+
+        <div class="setting toggles">
+            <label class="toggle"><input type="checkbox" id="set-sound"><span data-i18n="sounds">🔊 Sounds</span></label>
+            <label class="toggle"><input type="checkbox" id="set-review"><span data-i18n="review">🔁 Bring back old mistakes in new games</span></label>
+            <label class="toggle"><input type="checkbox" id="set-speak"><span data-i18n="speak">🗣️ Read questions aloud (like the teacher)</span></label>
+            <div class="speak-lang">
+                <label for="set-lang" data-i18n="voiceLang">Voice language</label>
+                <select id="set-lang">
+                    <option value="en">English</option>
+                    <option value="hr">Hrvatski / Bosanski / Srpski</option>
+                    <option value="de">Deutsch</option>
+                </select>
+            </div>
+        </div>
+
+        <p class="error" id="settings-error"></p>
+        <button class="btn btn-primary wide" id="btn-save-settings" data-i18n="save">Save</button>
+    </div>
+</div>
+
+<div class="overlay dim" id="player-modal" hidden>
+    <div class="card modal">
+        <button class="close-btn" data-close aria-label="Close">×</button>
+        <h2 id="player-title"></h2>
+        <div class="setting">
+            <label for="player-name" data-i18n="name">Name</label>
+            <input type="text" id="player-name" maxlength="16" autocomplete="off">
+        </div>
+        <div class="setting">
+            <label data-i18n="pickAnimal">Pick an animal</label>
+            <div class="avatar-grid" id="avatar-grid"></div>
+        </div>
+        <p class="error" id="player-error"></p>
+        <button class="btn btn-primary wide" id="btn-save-player" data-i18n="save">Save</button>
+        <button class="btn btn-danger wide" id="btn-delete-player" data-i18n="deletePlayer">Delete player</button>
+    </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<canvas id="confetti"></canvas>
+
+<script src="script.js"></script>
 </body>
 </html>
