@@ -428,10 +428,9 @@ function parseKey(key) {
 function fitsSettings(q, s) {
     if (!s.ops.includes(q.op)) return false;
     const inRange = n => n >= s.min && n <= s.max;
-    const ok = q.op === '/' ? inRange(q.b) && inRange(q.answer) : inRange(q.a) && inRange(q.b);
-    if (!ok) return false;
-    // with the answer limit, the result (and the dividend) must be in range too
-    return !s.limitAnswers || (inRange(q.answer) && inRange(q.a));
+    // both numbers in the question are always in range; with the limit, the answer too
+    if (!inRange(q.a) || !inRange(q.b)) return false;
+    return !s.limitAnswers || inRange(q.answer);
 }
 
 // Can this operation produce at least one question whose answer stays in range?
@@ -453,29 +452,46 @@ function limitedQuestion(op, { min, max }) {
         const a = rand(2 * min, max);
         return makeQuestion('-', a, rand(min, a - min));
     }
-    if (op === '*') {
-        const a = rand(min, max);
-        const top = a === 0 ? max : Math.floor(max / a);
-        return top < min ? null : makeQuestion('*', a, rand(min, top));
+    const a = rand(min, max);
+    const top = a === 0 ? max : Math.floor(max / a);
+    return top < min ? null : makeQuestion('*', a, rand(min, top));
+}
+
+// All divisions "a ÷ b" with a and b inside [min, max] that come out even
+// (and, with the answer limit, whose answer is in range too). Cached per range.
+const divisionCache = new Map();
+
+function divisionPairs({ min, max, limitAnswers }) {
+    const key = `${min},${max},${limitAnswers}`;
+    if (!divisionCache.has(key)) {
+        const all = [];
+        const nice = []; // without the very easy ones: 0 ÷ b, a ÷ 1, a ÷ a
+        for (let b = Math.max(1, min); b <= max; b++) {
+            for (let q = 0; b * q <= max; q++) {
+                if (b * q < min || (limitAnswers && (q < min || q > max))) continue;
+                all.push([b * q, b]);
+                if (b >= 2 && q >= 2) nice.push([b * q, b]);
+            }
+        }
+        divisionCache.set(key, { all, nice });
     }
-    const divisor = rand(Math.max(1, min), Math.max(1, max));
-    const top = Math.floor(max / divisor);
-    return top < min ? null : makeQuestion('/', divisor * rand(min, top), divisor);
+    return divisionCache.get(key);
+}
+
+function divisionQuestion(s) {
+    const { all, nice } = divisionPairs(s);
+    const [a, b] = pick(nice.length && Math.random() < 0.9 ? nice : all);
+    return makeQuestion('/', a, b);
 }
 
 function randomQuestion(s) {
     const op = pick(s.ops);
+    if (op === '/') return divisionQuestion(s);
     if (s.limitAnswers && limitPossible(op, s)) {
         for (let i = 0; i < 100; i++) {
             const q = limitedQuestion(op, s);
             if (q) return q;
         }
-    }
-    if (op === '/') {
-        // Division is the reverse of a multiplication fact: (b × q) ÷ b = q
-        const divisor = rand(Math.max(1, s.min), Math.max(1, s.max));
-        const quotient = rand(s.min, s.max);
-        return makeQuestion('/', divisor * quotient, divisor);
     }
     let a = rand(s.min, s.max);
     let b = rand(s.min, s.max);

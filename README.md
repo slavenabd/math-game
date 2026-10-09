@@ -48,7 +48,7 @@ There are quick presets: **0–10 + −**, **0–20 + −** and **0–100 + −*
 
 How questions are made:
 - Subtraction never gives a negative answer.
-- Division always comes out even. It is the reverse of a multiplication fact (e.g. `56 ÷ 8 = 7`), so the divisor and the answer stay inside the chosen range.
+- Division always comes out even, and both numbers in the question stay inside the chosen range (with 0–100 you get e.g. `56 ÷ 8`, never `2556 ÷ 36`). Very easy ones like `0 ÷ 7`, `9 ÷ 1` or `6 ÷ 6` are kept rare.
 - With 🎯 turned on, every number in the question *and* the answer stays inside the range. If a range makes that impossible (e.g. 15–20 with +), settings tell you.
 
 ## Keyboard shortcuts
