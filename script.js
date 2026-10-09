@@ -85,6 +85,8 @@ const I18N = {
         deletePlayer: 'Delete player',
         errName: 'Please type a name.',
         confirmDelete: n => `Delete ${n} and all their trophies?`,
+        resetPlayer: '↺ Reset progress',
+        confirmReset: n => `Reset ${n}'s scores, stars, trophies and saved mistakes? Name and settings stay.`,
         tr: {
             first: ['First Steps', 'Finish your first game'],
             perfect: ['Perfect!', 'Get every question right in round 1 (5+ questions)'],
@@ -177,6 +179,8 @@ const I18N = {
         deletePlayer: 'Obriši igrača',
         errName: 'Upiši ime.',
         confirmDelete: n => `Obrisati igrača ${n} i sve trofeje?`,
+        resetPlayer: '↺ Poništi rezultate',
+        confirmReset: n => `Poništiti sve rezultate, zvjezdice, trofeje i spremljene greške za: ${n}? Ime i postavke ostaju.`,
         tr: {
             first: ['Prvi koraci', 'Završi svoju prvu igru'],
             perfect: ['Savršeno!', 'Sve točno u 1. rundi (5+ zadataka)'],
@@ -1234,6 +1238,7 @@ function openPlayerModal(p) {
     $('#player-name').value = p ? p.name : '';
     $('#player-error').textContent = '';
     $('#btn-delete-player').hidden = !p || store.players.length < 2;
+    $('#btn-reset-player').hidden = !p;
     renderAvatars();
     el.playerModal.hidden = false;
     if (!p) setTimeout(() => $('#player-name').focus(), 50);
@@ -1266,6 +1271,18 @@ $('#btn-save-player').onclick = () => {
         store.players.push(p);
         store.current = p.id;
     }
+    saveStore();
+    el.playerModal.hidden = true;
+    renderHome();
+};
+
+$('#btn-reset-player').onclick = () => {
+    const p = editingPlayer;
+    if (!p || !confirm(t('confirmReset', p.name))) return;
+    const fresh = newPlayer(p.name, p.avatar);
+    p.stats = fresh.stats;
+    p.trophies = fresh.trophies;
+    p.missed = fresh.missed;
     saveStore();
     el.playerModal.hidden = true;
     renderHome();

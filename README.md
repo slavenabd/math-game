@@ -80,7 +80,7 @@ It's a static site (`index.html`, `styles.css`, `script.js`) with no build step.
   ```
   Then open `http://localhost:5000`.
 
-Progress (players, settings, scores, trophies) is saved in the browser's local storage on each device. Clearing the browser's site data resets it.
+Progress (players, settings, scores, trophies) is saved in the browser's local storage on each device. To start a player over, tap their name (or ✏️) → **↺ Reset progress**. This clears scores, stars, trophies and saved mistakes, and keeps the name and settings.
 
 ## Technologies
 
