@@ -16,6 +16,8 @@ A friendly math practice game for elementary school kids. It's built to feel lik
 
 ## Features
 
+- 📘 **Go through all tasks.** For the chosen settings the game works out every possible task. Each game (a *session*) takes tasks that haven't been done yet, so after enough sessions every one has come up once. For example, 0–10 with + and 🎯 has 66 tasks, which is 7 sessions of 10 questions. The home screen shows the progress ("34 / 66 tasks done · session 4 of 7"). When all are done, the child gets a 🎓 trophy and a new pass starts. Progress is saved per player and per setting, so switching ranges keeps each one's progress. 3 + 5 and 5 + 3 count as different tasks. Very large ranges (over 20,000 tasks) aren't tracked.
+
 - ⏱ **Timer per question.** The default is 5 seconds; set it to 3–20 seconds or turn it off. It turns orange and then red as time runs out.
 - 🔁 **Repeat until learned.** Missed questions come back in fix‑up rounds.
 - 🧠 **Remembers old mistakes.** Facts a player got wrong before are mixed into later games (up to 30% of the questions) until they are answered right on the first try.

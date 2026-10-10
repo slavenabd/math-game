@@ -86,8 +86,17 @@ const I18N = {
         errName: 'Please type a name.',
         confirmDelete: n => `Delete ${n} and all their trophies?`,
         resetPlayer: '↺ Reset progress',
-        confirmReset: n => `Reset ${n}'s scores, stars, trophies and saved mistakes? Name and settings stay.`,
+        confirmReset: n => `Reset ${n}'s scores, stars, trophies, saved mistakes and task progress? Name and settings stay.`,
+        courseTitle: 'All tasks',
+        courseLine: (done, total) => `${done} / ${total} tasks done`,
+        sessionOf: (n, m) => `session ${n} of ${m}`,
+        courseCycles: n => `completed ${n}×`,
+        courseTooBig: n => `${n} possible tasks: too many to go through all of them. Pick a smaller range to track them.`,
+        courseDone: n => `🎓 You did all ${n} tasks!`,
+        courseRestart: 'Next game starts a new pass.',
+        sessionsLeft: n => (n === 1 ? 'Just 1 more session to go!' : `${n} more sessions to go`),
         tr: {
+            graduate: ['Graduate', 'Go through all tasks of a range'],
             first: ['First Steps', 'Finish your first game'],
             perfect: ['Perfect!', 'Get every question right in round 1 (5+ questions)'],
             streak5: ['On Fire', '5 correct answers in a row'],
@@ -180,8 +189,17 @@ const I18N = {
         errName: 'Upiši ime.',
         confirmDelete: n => `Obrisati igrača ${n} i sve trofeje?`,
         resetPlayer: '↺ Poništi rezultate',
-        confirmReset: n => `Poništiti sve rezultate, zvjezdice, trofeje i spremljene greške za: ${n}? Ime i postavke ostaju.`,
+        confirmReset: n => `Poništiti sve rezultate, zvjezdice, trofeje, spremljene greške i napredak kroz zadatke za: ${n}? Ime i postavke ostaju.`,
+        courseTitle: 'Svi zadaci',
+        courseLine: (done, total) => `Riješeno ${done} / ${total} ${hrPlural(total, 'zadatak', 'zadatka', 'zadataka')}`,
+        sessionOf: (n, m) => `vježba ${n} od ${m}`,
+        courseCycles: n => `završeno ${n}×`,
+        courseTooBig: n => `${n} ${hrPlural(n, 'mogući zadatak', 'moguća zadatka', 'mogućih zadataka')}: previše da bi se prošli svi. Odaberi manji raspon.`,
+        courseDone: n => `🎓 Riješeni su svi zadaci (${n})!`,
+        courseRestart: 'Sljedeća igra kreće ispočetka.',
+        sessionsLeft: n => (n === 1 ? 'Još samo 1 vježba!' : `Još ${n} ${hrPlural(n, 'vježba', 'vježbe', 'vježbi')}`),
         tr: {
+            graduate: ['Sve riješeno', 'Prođi sve zadatke jednog raspona'],
             first: ['Prvi koraci', 'Završi svoju prvu igru'],
             perfect: ['Savršeno!', 'Sve točno u 1. rundi (5+ zadataka)'],
             streak5: ['U plamenu', '5 točnih odgovora zaredom'],
@@ -244,6 +262,7 @@ const FEEDBACK_BAD_MS = 2200; // longer, so the correct answer can sink in
 const MAX_DIGITS = 5;
 
 const TROPHIES = [
+    { id: 'graduate', icon: '🎓', test: c => c.courseCompleted },
     { id: 'first', icon: '🎒', test: c => c.stats.games >= 1 },
     { id: 'perfect', icon: '💯', test: c => c.perfect },
     { id: 'streak5', icon: '🔥', test: c => c.bestStreak >= 5 },
@@ -300,6 +319,7 @@ function newPlayer(name, avatar) {
         stats: { games: 0, correct: 0, stars: 0, bestScore: 0, bestStreak: 0 },
         trophies: {},
         missed: {}, // question key -> times missed, used to bring old mistakes back
+        courses: {}, // course key -> { done: bitset (base64) of finished tasks, cycles }
     };
 }
 
@@ -312,6 +332,7 @@ function loadStore() {
                 p.stats = { ...newPlayer().stats, ...p.stats };
                 p.trophies = p.trophies || {};
                 p.missed = p.missed || {};
+                p.courses = p.courses || {};
             });
             return data;
         }
@@ -503,6 +524,98 @@ function randomQuestion(s) {
     return makeQuestion(op, a, b);
 }
 
+// ---------- Course: every possible task for the chosen settings ----------
+// Each game ("session") takes tasks that haven't been done yet, so after enough
+// sessions the child has gone through all of them. Progress is kept per player
+// and per settings (operations + range + answer limit).
+const COURSE_MAX = 20000; // above this we don't track (too many to ever finish)
+const courseCache = new Map();
+
+function courseKey(s) {
+    return `${['+', '-', '*', '/'].filter(o => s.ops.includes(o)).join('')}|${s.min}|${s.max}|${s.limitAnswers ? 1 : 0}`;
+}
+
+// The full task list, in a fixed order (the order matters: progress is stored by position)
+function getCourse(s) {
+    const key = courseKey(s);
+    if (courseCache.has(key)) return courseCache.get(key);
+
+    const { min, max, limitAnswers } = s;
+    const list = [];
+    let total = 0;
+    const add = (op, a, b) => {
+        total++;
+        if (total <= COURSE_MAX) list.push(makeQuestion(op, a, b));
+    };
+    for (const op of ['+', '-', '*', '/']) {
+        if (!s.ops.includes(op)) continue;
+        if (op === '/') {
+            divisionPairs(s).all.forEach(([a, b]) => add('/', a, b));
+            continue;
+        }
+        for (let a = min; a <= max; a++) {
+            if (op === '-') {
+                for (let b = min; b <= a; b++) {
+                    if (limitAnswers && a - b < min) break;
+                    add('-', a, b);
+                }
+            } else {
+                for (let b = min; b <= max; b++) {
+                    if (limitAnswers && (op === '+' ? a + b : a * b) > max) break;
+                    add(op, a, b);
+                }
+            }
+        }
+    }
+    const course = total > COURSE_MAX
+        ? { key, total, list: null }
+        : { key, total, list, index: new Map(list.map((q, i) => [q.key, i])) };
+    courseCache.set(key, course);
+    return course;
+}
+
+function courseBits(p, course) {
+    const bytes = new Uint8Array(Math.ceil(course.total / 8));
+    const saved = p.courses[course.key];
+    if (saved && saved.done) {
+        try {
+            const bin = atob(saved.done);
+            for (let i = 0; i < bin.length && i < bytes.length; i++) bytes[i] = bin.charCodeAt(i);
+        } catch (e) { /* corrupt: start this course over */ }
+    }
+    return bytes;
+}
+
+const hasBit = (bytes, i) => (bytes[i >> 3] >> (i & 7)) & 1;
+const setBit = (bytes, i) => { bytes[i >> 3] |= 1 << (i & 7); };
+
+function countBits(bytes, total) {
+    let n = 0;
+    for (let i = 0; i < total; i++) n += hasBit(bytes, i);
+    return n;
+}
+
+function saveCourseBits(p, course, bytes, cycles) {
+    let bin = '';
+    bytes.forEach(b => { bin += String.fromCharCode(b); });
+    p.courses[course.key] = { done: btoa(bin), cycles };
+}
+
+function courseProgress(p, s) {
+    const course = getCourse(s);
+    if (!course.list) return { course, tracked: false };
+    const bits = courseBits(p, course);
+    const done = countBits(bits, course.total);
+    const left = course.total - done;
+    const sessions = Math.ceil(course.total / s.questions);
+    const sessionsLeft = Math.ceil(left / s.questions);
+    return {
+        course, tracked: true, bits, done, left, sessions, sessionsLeft,
+        session: Math.min(sessions, sessions - sessionsLeft + 1),
+        cycles: (p.courses[course.key] || {}).cycles || 0,
+    };
+}
+
 function buildQuestions(s, p) {
     const list = [];
     const keys = new Set();
@@ -511,6 +624,15 @@ function buildQuestions(s, p) {
     if (s.review) {
         const old = shuffle(Object.keys(p.missed).map(parseKey).filter(q => q && fitsSettings(q, s)));
         old.slice(0, Math.floor(s.questions * 0.3)).forEach(q => { list.push(q); keys.add(q.key); });
+    }
+
+    // Fill up with tasks from the course that haven't been done yet
+    const prog = courseProgress(p, s);
+    if (prog.tracked) {
+        const todo = [];
+        prog.course.list.forEach((q, i) => { if (!hasBit(prog.bits, i) && !keys.has(q.key)) todo.push(q); });
+        shuffle(todo).slice(0, s.questions - list.length).forEach(q => { list.push(q); keys.add(q.key); });
+        return shuffle(list);
     }
 
     let attempts = 0;
@@ -631,6 +753,8 @@ function renderHome() {
         t('numbersRange', s.min, s.max) + (s.limitAnswers ? ` 🎯` : ''),
     ].join(' · ') + '  ✏️';
 
+    renderCourse($('#home-course'), courseProgress(p, s), s);
+
     el.homeStats.innerHTML = [
         [p.stats.bestScore, t('statBest')],
         [p.stats.games, t('statGames')],
@@ -654,6 +778,34 @@ function renderHome() {
         };
         el.trophyGrid.appendChild(b);
     });
+}
+
+function courseLabel(s) {
+    return `${s.ops.map(o => OPS[o].sym).join(' ')} · ${s.min}–${s.max}${s.limitAnswers ? ' 🎯' : ''}`;
+}
+
+// Progress card: "34 / 66 tasks done · session 4 of 7"
+function renderCourse(box, prog, s, { before = null, completed = false } = {}) {
+    if (!prog.tracked) {
+        box.innerHTML = `<h3>📘 ${t('courseTitle')} <span class="muted">${courseLabel(s)}</span></h3>
+            <p class="muted">${t('courseTooBig', prog.course.total)}</p>`;
+        return;
+    }
+    const total = prog.course.total;
+    const done = completed ? total : prog.done;
+    const pct = n => `${(100 * n / total).toFixed(1)}%`;
+    let line;
+    if (completed) line = `<b>${t('courseDone', total)}</b> ${t('courseRestart')}`;
+    else if (before !== null) line = t('sessionsLeft', prog.sessionsLeft);
+    else line = `${t('sessionOf', prog.session, prog.sessions)}${prog.cycles ? ` · ${t('courseCycles', prog.cycles)}` : ''}`;
+    box.innerHTML = `<h3>📘 ${t('courseTitle')} <span class="muted">${courseLabel(s)}</span></h3>
+        <div class="course-bar"><div style="width:${pct(before === null ? done : before)}"></div></div>
+        <p><b>${t('courseLine', done, total)}</b><br><span class="muted">${line}</span></p>`;
+    if (before !== null) {
+        // animate the bar from the old to the new progress
+        const fill = box.querySelector('.course-bar div');
+        later(400, () => { fill.style.width = pct(done); });
+    }
 }
 
 // ---------- Game state ----------
@@ -1023,6 +1175,24 @@ function finishGame() {
     const missedKeys = Object.keys(p.missed);
     missedKeys.slice(0, Math.max(0, missedKeys.length - 60)).forEach(k => delete p.missed[k]);
 
+    // Every task of this session counts as done in the course (rounds made sure it was solved)
+    const prog = courseProgress(p, s);
+    let courseCompleted = false;
+    let doneBefore = null;
+    if (prog.tracked) {
+        doneBefore = prog.done;
+        game.results.forEach(r => {
+            const i = prog.course.index.get(r.q.key);
+            if (i !== undefined) setBit(prog.bits, i);
+        });
+        if (countBits(prog.bits, prog.course.total) >= prog.course.total) {
+            courseCompleted = true;
+            saveCourseBits(p, prog.course, new Uint8Array(prog.bits.length), prog.cycles + 1);
+        } else {
+            saveCourseBits(p, prog.course, prog.bits, prog.cycles);
+        }
+    }
+
     const ctx = {
         s,
         stats: p.stats,
@@ -1031,6 +1201,7 @@ function finishGame() {
         fast: game.fast,
         rounds: game.round,
         newBest,
+        courseCompleted,
     };
     const earned = TROPHIES.filter(tr => !p.trophies[tr.id] && tr.test(ctx));
     earned.forEach(tr => { p.trophies[tr.id] = new Date().toISOString(); });
@@ -1056,6 +1227,10 @@ function finishGame() {
             `<div class="trophy" style="animation-delay:${1 + i * 0.3}s"><span class="ti">${tr.icon}</span>${trophyName(tr)}</div>`).join('')}</div>`
         : '';
 
+    const resCourse = $('#res-course');
+    resCourse.hidden = !prog.tracked;
+    if (prog.tracked) renderCourse(resCourse, courseProgress(p, s), s, { before: doneBefore, completed: courseCompleted });
+
     $('#res-tricky').innerHTML = tricky.length
         ? `<h3>${t('trickyTitle')}</h3><ul>${tricky.map(r =>
             `<li>${questionText(r.q)} = <b>${r.q.answer}</b> <small>(${t('tries', r.attempts)})</small></li>`).join('')}</ul>`
@@ -1064,7 +1239,8 @@ function finishGame() {
     showScreen('results');
     countUp($('#res-score'), game.score);
     sfx.fanfare();
-    confetti(stars === 3 ? 220 : 120);
+    confetti(stars === 3 || courseCompleted ? 220 : 120);
+    if (courseCompleted) later(1500, () => confetti(220));
     earned.forEach((tr, i) => later(1200 + i * 900, () => { toast(tr); sfx.trophy(); }));
 }
 
@@ -1285,6 +1461,7 @@ $('#btn-reset-player').onclick = () => {
     p.stats = fresh.stats;
     p.trophies = fresh.trophies;
     p.missed = fresh.missed;
+    p.courses = fresh.courses;
     saveStore();
     el.playerModal.hidden = true;
     renderHome();

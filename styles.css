@@ -184,6 +184,7 @@ button {
     text-shadow: 0 4px 0 rgba(124, 92, 255, 0.18);
 }
 .title .t2 { color: var(--orange); }
+html[lang="en"] .title .t2 { margin-left: 0.22em; }
 .greeting { font-size: 1.2rem; margin: 8px 0 14px; }
 
 .mascot { font-size: 4.5rem; line-height: 1; display: inline-block; }
@@ -215,6 +216,20 @@ button {
 }
 .stat b { display: block; font-size: 1.4rem; color: var(--primary); }
 .stat small { color: var(--muted); font-size: 0.78rem; }
+
+.course-card { margin-bottom: 16px; text-align: left; }
+.course-card.inset { background: var(--key); border-radius: 18px; padding: 12px 14px; margin-bottom: 12px; }
+.course-card h3 { margin: 0 0 8px; font-size: 1.1rem; }
+.course-card h3 .muted { font-size: 0.95rem; margin-left: 4px; }
+.course-card p { margin: 8px 0 0; font-size: 0.95rem; }
+.course-bar { height: 14px; border-radius: 999px; background: #ebe8fb; overflow: hidden; }
+.course-card.inset .course-bar { background: #fff; }
+.course-bar div {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--primary), #38bdf8);
+    transition: width 1.2s ease-out;
+}
 
 .trophies-card h2 { margin: 0 0 12px; font-size: 1.3rem; }
 .trophy-grid {
