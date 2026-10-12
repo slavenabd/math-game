@@ -231,6 +231,19 @@ html[lang="en"] .title .t2 { margin-left: 0.22em; }
     transition: width 1.2s ease-out;
 }
 
+.next-trophy { background: var(--key); border-radius: 18px; padding: 12px 14px; margin-bottom: 12px; text-align: left; }
+.next-trophy:empty { display: none; }
+.next-trophy .course-bar { margin: 8px 0 4px; background: #fff; }
+
+.btn.small { font-size: 1rem; padding: 10px 12px; box-shadow: 0 4px 0 #d9d4f5; }
+.btn-pair { display: flex; gap: 8px; margin-bottom: 14px; }
+.btn-pair .btn { flex: 1; }
+.backup { border-top: 2px dashed #e2def7; padding-top: 16px; margin-top: 18px; }
+.backup .hint { margin: 0 0 10px; }
+.backup-row { display: flex; gap: 8px; align-items: center; }
+.backup-row select { flex: 1; min-width: 0; }
+.btn:disabled { opacity: 0.5; }
+
 .trophies-card h2 { margin: 0 0 12px; font-size: 1.3rem; }
 .trophy-grid {
     display: grid;

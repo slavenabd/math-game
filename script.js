@@ -54,7 +54,7 @@ const I18N = {
         trickyTitle: 'Tricky ones to remember',
         tries: n => `${n} tries`,
         home: '🏠 Home',
-        again: '↻ Play again',
+        again: '▶ Next game',
         trophyWon: 'Trophy won!',
         settingsFor: p => `Settings for ${p}`,
         quickStart: 'Quick start',
@@ -95,9 +95,54 @@ const I18N = {
         courseDone: n => `🎓 You did all ${n} tasks!`,
         courseRestart: 'Next game starts a new pass.',
         sessionsLeft: n => (n === 1 ? 'Just 1 more session to go!' : `${n} more sessions to go`),
+        nextTrophy: 'Next trophy:',
+        backupTitle: '💾 Backup (all players)',
+        backupInfo: 'Progress is saved on this device. Save a backup file now and then (e.g. send it to yourself on Viber or put it on Drive), so nothing is lost if the browser data gets cleared. You can also load it on another phone.',
+        backupSave: '⬇ Save backup',
+        backupLoad: '⬆ Load backup',
+        autoBackups: 'Automatic backups on this device',
+        restore: '↩ Restore',
+        noBackups: 'No automatic backups yet',
+        backupLoaded: 'Backup loaded ✅',
+        backupBad: 'This file is not a Math Game backup.',
+        confirmLoad: (date, n) => `Replace all progress on this device with the backup from ${date} (${n} ${n === 1 ? 'player' : 'players'})?`,
+        confirmRestore: date => `Go back to the automatic backup from ${date}? (Current progress is saved as a backup first.)`,
+        parentGate: (q, a, b) => `🔒 Parent check\n${q}\n\nTo confirm, type: how much is ${a} × ${b}?`,
+        gateWrong: 'Not the right answer, so nothing was changed.',
         tr: {
             graduate: ['Graduate', 'Go through all tasks of a range'],
             first: ['First Steps', 'Finish your first game'],
+            streak3: ['Hat Trick', '3 correct answers in a row'],
+            stars5: ['Little Star', 'Collect 5 stars'],
+            correct10: ['Ten!', '10 correct answers'],
+            fixup: ['All Fixed', 'Finish a game that had a fix-up round'],
+            fast3: ['Quick Bunny', '3 super-fast answers in one game'],
+            points100: ['100 Points', 'Score 100 points in one game'],
+            games3: ['Warming Up', 'Play 3 games'],
+            days2: ['See You Tomorrow', 'Play on 2 different days'],
+            reader: ['Good Listener', 'Play a game with questions read aloud'],
+            threeStars: ['Three Stars', 'Get 3 stars in one game'],
+            course25: ['Good Start', 'Do a quarter of all tasks of a range'],
+            course50: ['Halfway', 'Do half of all tasks of a range'],
+            course75: ['Almost There', 'Do three quarters of all tasks of a range'],
+            correct25: ['25 Correct', '25 correct answers'],
+            correct50: ['50 Correct', '50 correct answers'],
+            stars15: ['Shooting Star', 'Collect 15 stars'],
+            days3: ['3 Days in a Row', 'Play 3 days in a row'],
+            points200: ['Diamond', 'Score 200 points in one game'],
+            plus50: ['Plus Pro', '50 correct additions'],
+            minus50: ['Minus Pro', '50 correct subtractions'],
+            times50: ['Times Pro', '50 correct multiplications'],
+            divide50: ['Division Pro', '50 correct divisions'],
+            brave: ['Brave Heart', 'Finish a game with a 3-second timer'],
+            explorer: ['Explorer', 'Get + − × ÷ right at least once each'],
+            weekend: ['Weekend Fun', 'Play on a Saturday or Sunday'],
+            days7: ['Whole Week', 'Play 7 days in a row'],
+            courses3: ['Diploma', 'Go through all tasks of a range 3 times'],
+            ranges3: ['Traveller', 'Go through all tasks of 3 different settings'],
+            points1000: ['Crown', 'Collect 1000 points in total'],
+            games50: ['Legend', 'Play 50 games'],
+            points5000: ['To the Moon', 'Collect 5000 points in total'],
             perfect: ['Perfect!', 'Get every question right in round 1 (5+ questions)'],
             streak5: ['On Fire', '5 correct answers in a row'],
             streak10: ['Unstoppable', '10 correct answers in a row'],
@@ -157,7 +202,7 @@ const I18N = {
         trickyTitle: 'Zapamti ove zadatke',
         tries: n => `${n} ${hrPlural(n, 'pokušaj', 'pokušaja', 'pokušaja')}`,
         home: '🏠 Početna',
-        again: '↻ Igraj ponovno',
+        again: '▶ Sljedeća igra',
         trophyWon: 'Novi trofej!',
         settingsFor: p => `Postavke: ${p}`,
         quickStart: 'Brzi odabir',
@@ -198,9 +243,54 @@ const I18N = {
         courseDone: n => `🎓 Riješeni su svi zadaci (${n})!`,
         courseRestart: 'Sljedeća igra kreće ispočetka.',
         sessionsLeft: n => (n === 1 ? 'Još samo 1 vježba!' : `Još ${n} ${hrPlural(n, 'vježba', 'vježbe', 'vježbi')}`),
+        nextTrophy: 'Sljedeći trofej:',
+        backupTitle: '💾 Sigurnosna kopija (svi igrači)',
+        backupInfo: 'Napredak se sprema na ovom uređaju. Povremeno spremi kopiju (npr. pošalji je sebi na Viber ili spremi na Drive), da se ništa ne izgubi ako se obrišu podaci preglednika. Kopiju možeš učitati i na drugom mobitelu.',
+        backupSave: '⬇ Spremi kopiju',
+        backupLoad: '⬆ Učitaj kopiju',
+        autoBackups: 'Automatske kopije na ovom uređaju',
+        restore: '↩ Vrati',
+        noBackups: 'Još nema automatskih kopija',
+        backupLoaded: 'Kopija je učitana ✅',
+        backupBad: 'Ova datoteka nije kopija igre Matematika.',
+        confirmLoad: (date, n) => `Zamijeniti sav napredak na ovom uređaju kopijom od ${date} (${n} ${hrPlural(n, 'igrač', 'igrača', 'igrača')})?`,
+        confirmRestore: date => `Vratiti automatsku kopiju od ${date}? (Trenutni napredak se prije toga sprema kao kopija.)`,
+        parentGate: (q, a, b) => `🔒 Provjera za roditelje\n${q}\n\nZa potvrdu upiši: koliko je ${a} × ${b}?`,
+        gateWrong: 'Odgovor nije točan, ništa nije promijenjeno.',
         tr: {
             graduate: ['Sve riješeno', 'Prođi sve zadatke jednog raspona'],
             first: ['Prvi koraci', 'Završi svoju prvu igru'],
+            streak3: ['Tri zaredom', '3 točna odgovora zaredom'],
+            stars5: ['Mala zvijezda', 'Skupi 5 zvjezdica'],
+            correct10: ['Deset!', '10 točnih odgovora'],
+            fixup: ['Sve popravljeno', 'Završi igru koja je imala rundu popravka'],
+            fast3: ['Brzi zeko', '3 super brza odgovora u jednoj igri'],
+            points100: ['100 bodova', 'Osvoji 100 bodova u jednoj igri'],
+            games3: ['Zagrijavanje', 'Odigraj 3 igre'],
+            days2: ['Vidimo se sutra', 'Igraj u 2 različita dana'],
+            reader: ['Dobro slušam', 'Odigraj igru u kojoj se zadaci čitaju naglas'],
+            threeStars: ['Tri zvjezdice', 'Osvoji 3 zvjezdice u jednoj igri'],
+            course25: ['Dobar početak', 'Riješi četvrtinu svih zadataka jednog raspona'],
+            course50: ['Pola puta', 'Riješi pola svih zadataka jednog raspona'],
+            course75: ['Skoro gotovo', 'Riješi tri četvrtine svih zadataka jednog raspona'],
+            correct25: ['25 točnih', '25 točnih odgovora'],
+            correct50: ['50 točnih', '50 točnih odgovora'],
+            stars15: ['Zvijezda padalica', 'Skupi 15 zvjezdica'],
+            days3: ['3 dana zaredom', 'Igraj 3 dana zaredom'],
+            points200: ['Dijamant', 'Osvoji 200 bodova u jednoj igri'],
+            plus50: ['Majstor zbrajanja', '50 točnih zbrajanja'],
+            minus50: ['Majstor oduzimanja', '50 točnih oduzimanja'],
+            times50: ['Majstor množenja', '50 točnih množenja'],
+            divide50: ['Majstor dijeljenja', '50 točnih dijeljenja'],
+            brave: ['Hrabro srce', 'Završi igru s vremenom od 3 sekunde'],
+            explorer: ['Istraživač', 'Točno riješi barem jedan + − × ÷ zadatak'],
+            weekend: ['Vikend zabava', 'Igraj u subotu ili nedjelju'],
+            days7: ['Cijeli tjedan', 'Igraj 7 dana zaredom'],
+            courses3: ['Diploma', 'Prođi sve zadatke jednog raspona 3 puta'],
+            ranges3: ['Putnik', 'Prođi sve zadatke u 3 različite postavke'],
+            points1000: ['Kruna', 'Skupi ukupno 1000 bodova'],
+            games50: ['Legenda', 'Odigraj 50 igara'],
+            points5000: ['Do Mjeseca', 'Skupi ukupno 5000 bodova'],
             perfect: ['Savršeno!', 'Sve točno u 1. rundi (5+ zadataka)'],
             streak5: ['U plamenu', '5 točnih odgovora zaredom'],
             streak10: ['Raketa', '10 točnih odgovora zaredom'],
@@ -261,23 +351,63 @@ const FEEDBACK_OK_MS = 800;
 const FEEDBACK_BAD_MS = 2200; // longer, so the correct answer can sink in
 const MAX_DIGITS = 5;
 
+// Ordered from easy to hard. `goal` (optional) gives [current, target] for "next trophy" hints.
+const opsDone = st => ['+', '-', '*', '/'].filter(o => st.ops[o] > 0).length;
 const TROPHIES = [
-    { id: 'graduate', icon: '🎓', test: c => c.courseCompleted },
+    // easy: something to win in the first games
     { id: 'first', icon: '🎒', test: c => c.stats.games >= 1 },
-    { id: 'perfect', icon: '💯', test: c => c.perfect },
+    { id: 'streak3', icon: '✨', test: c => c.bestStreak >= 3 },
+    { id: 'stars5', icon: '⭐', goal: st => [st.stars, 5] },
+    { id: 'correct10', icon: '🔟', goal: st => [st.correct, 10] },
+    { id: 'fixup', icon: '🔧', test: c => c.rounds >= 2 },
+    { id: 'fast3', icon: '🐇', test: c => c.fast >= 3 },
+    { id: 'points100', icon: '💰', test: c => c.score >= 100 },
+    { id: 'games3', icon: '🎲', goal: st => [st.games, 3] },
+    { id: 'days2', icon: '📅', goal: st => [st.days, 2] },
+    { id: 'reader', icon: '👂', test: c => c.s.speak },
+    { id: 'threeStars', icon: '🤩', test: c => c.stars === 3 },
+    { id: 'course25', icon: '🌱', test: c => c.coursePct >= 0.25 },
+    { id: 'course50', icon: '🌿', test: c => c.coursePct >= 0.5 },
+    { id: 'course75', icon: '🌳', test: c => c.coursePct >= 0.75 },
+    { id: 'graduate', icon: '🎓', test: c => c.courseCompleted },
+    // medium
     { id: 'streak5', icon: '🔥', test: c => c.bestStreak >= 5 },
-    { id: 'streak10', icon: '🚀', test: c => c.bestStreak >= 10 },
+    { id: 'perfect', icon: '💯', test: c => c.perfect },
     { id: 'lightning', icon: '⚡', test: c => c.fast >= 5 },
-    { id: 'speedy', icon: '🏎️', test: c => c.perfect && c.s.seconds > 0 && c.s.seconds <= 3 },
+    { id: 'games5', icon: '📚', goal: st => [st.games, 5] },
+    { id: 'correct25', icon: '🎈', goal: st => [st.correct, 25] },
+    { id: 'correct50', icon: '🧩', goal: st => [st.correct, 50] },
+    { id: 'stars15', icon: '💫', goal: st => [st.stars, 15] },
+    { id: 'days3', icon: '🗓️', goal: st => [st.dayStreak, 3] },
     { id: 'persist', icon: '💪', test: c => c.rounds >= 3 },
     { id: 'record', icon: '🥇', test: c => c.newBest },
+    { id: 'points200', icon: '💎', test: c => c.score >= 200 },
+    { id: 'plus50', icon: '➕', goal: st => [st.ops['+'], 50] },
+    { id: 'minus50', icon: '➖', goal: st => [st.ops['-'], 50] },
+    { id: 'times50', icon: '✖️', goal: st => [st.ops['*'], 50] },
+    { id: 'divide50', icon: '➗', goal: st => [st.ops['/'], 50] },
+    { id: 'brave', icon: '⏱️', test: c => c.s.seconds > 0 && c.s.seconds <= 3 },
     { id: 'rainbow', icon: '🌈', test: c => c.s.ops.length === 4 },
-    { id: 'games5', icon: '📚', test: c => c.stats.games >= 5 },
-    { id: 'games25', icon: '🏆', test: c => c.stats.games >= 25 },
-    { id: 'stars30', icon: '🌟', test: c => c.stats.stars >= 30 },
-    { id: 'correct100', icon: '🎯', test: c => c.stats.correct >= 100 },
-    { id: 'correct500', icon: '🧙', test: c => c.stats.correct >= 500 },
+    { id: 'explorer', icon: '🧭', goal: st => [opsDone(st), 4] },
+    { id: 'weekend', icon: '🏖️', test: c => c.weekend },
+    // hard
+    { id: 'streak10', icon: '🚀', test: c => c.bestStreak >= 10 },
+    { id: 'speedy', icon: '🏎️', test: c => c.perfect && c.s.seconds > 0 && c.s.seconds <= 3 },
+    { id: 'days7', icon: '📆', goal: st => [st.dayStreak, 7] },
+    { id: 'games25', icon: '🏆', goal: st => [st.games, 25] },
+    { id: 'stars30', icon: '🌟', goal: st => [st.stars, 30] },
+    { id: 'correct100', icon: '🎯', goal: st => [st.correct, 100] },
+    { id: 'courses3', icon: '📜', goal: st => [st.courses, 3] },
+    { id: 'ranges3', icon: '🗺️', goal: st => [st.ranges.length, 3] },
+    { id: 'points1000', icon: '👑', goal: st => [st.points, 1000] },
+    { id: 'correct500', icon: '🧙', goal: st => [st.correct, 500] },
+    { id: 'games50', icon: '🐉', goal: st => [st.games, 50] },
+    { id: 'points5000', icon: '🌙', goal: st => [st.points, 5000] },
 ];
+// A trophy with only a goal is won when the goal is reached
+TROPHIES.forEach(tr => {
+    if (!tr.test) tr.test = c => { const [cur, target] = tr.goal(c.stats); return cur >= target; };
+});
 const trophyName = tr => t('tr')[tr.id][0];
 const trophyDesc = tr => t('tr')[tr.id][1];
 
@@ -316,32 +446,84 @@ function newPlayer(name, avatar) {
         name,
         avatar,
         settings: { ...DEFAULT_SETTINGS, ops: [...DEFAULT_SETTINGS.ops], lang },
-        stats: { games: 0, correct: 0, stars: 0, bestScore: 0, bestStreak: 0 },
+        stats: {
+            games: 0, correct: 0, stars: 0, bestScore: 0, bestStreak: 0,
+            points: 0,                                   // all points ever
+            ops: { '+': 0, '-': 0, '*': 0, '/': 0 },     // correct answers per operation
+            days: 0, lastDay: '', dayStreak: 0, bestDayStreak: 0,
+            courses: 0, ranges: [],                      // finished courses / their settings keys
+        },
         trophies: {},
         missed: {}, // question key -> times missed, used to bring old mistakes back
         courses: {}, // course key -> { done: bitset (base64) of finished tasks, cycles }
     };
 }
 
-function loadStore() {
+// Check and fill in a saved store (from storage, a backup or a file); null if it isn't one
+function parseStore(raw) {
     try {
-        const data = JSON.parse(localStorage.getItem(STORE_KEY));
-        if (data && Array.isArray(data.players) && data.players.length) {
-            data.players.forEach(p => {
-                p.settings = { ...DEFAULT_SETTINGS, ...p.settings };
-                p.stats = { ...newPlayer().stats, ...p.stats };
-                p.trophies = p.trophies || {};
-                p.missed = p.missed || {};
-                p.courses = p.courses || {};
-            });
-            return data;
-        }
-    } catch (e) { /* storage unavailable or corrupt: start fresh */ }
+        const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        if (!data || !Array.isArray(data.players) || !data.players.length) return null;
+        data.players.forEach(p => {
+            const fresh = newPlayer(p.name, p.avatar);
+            p.settings = { ...DEFAULT_SETTINGS, ...p.settings };
+            p.stats = { ...fresh.stats, ...p.stats };
+            p.stats.ops = { ...fresh.stats.ops, ...p.stats.ops };
+            if (!Array.isArray(p.stats.ranges)) p.stats.ranges = [];
+            p.trophies = p.trophies || {};
+            p.missed = p.missed || {};
+            p.courses = p.courses || {};
+        });
+        return data;
+    } catch (e) {
+        return null;
+    }
+}
+
+// Automatic backups: one per day (after a game), plus one before every reset, delete or restore
+const BACKUP_KEY = 'mathgame.backups';
+const MAX_BACKUPS = 10;
+
+function readBackups() {
+    try {
+        const list = JSON.parse(localStorage.getItem(BACKUP_KEY));
+        return Array.isArray(list) ? list : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function addBackup(keep = false) {
+    const list = readBackups();
+    const entry = { t: new Date().toISOString(), data: JSON.stringify(store) };
+    const last = list[list.length - 1];
+    if (!keep && last && !last.keep && last.t.slice(0, 10) === entry.t.slice(0, 10)) list[list.length - 1] = entry;
+    else list.push(keep ? { ...entry, keep: true } : entry);
+    try { localStorage.setItem(BACKUP_KEY, JSON.stringify(list.slice(-MAX_BACKUPS))); } catch (e) { /* full */ }
+}
+
+function loadStore() {
+    let raw = null;
+    try { raw = localStorage.getItem(STORE_KEY); } catch (e) { return null; }
+    const data = parseStore(raw);
+    if (data) return data;
+    // Damaged data: keep a copy instead of overwriting it, then use the newest good backup
+    if (raw) try { localStorage.setItem(`${STORE_KEY}.damaged.${Date.now()}`, raw); } catch (e) { /* full */ }
+    const backups = readBackups();
+    for (let i = backups.length - 1; i >= 0; i--) {
+        const restored = parseStore(backups[i].data);
+        if (restored) return restored;
+    }
     return null;
 }
 
 function saveStore() {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) { /* ignore */ }
+}
+
+// Ask the browser not to clear our data when the phone runs low on space
+if (navigator.storage && navigator.storage.persist) {
+    navigator.storage.persisted().then(ok => ok || navigator.storage.persist()).catch(() => {});
 }
 
 const saved = loadStore();
@@ -774,7 +956,8 @@ function renderHome() {
         b.onclick = () => {
             $$('.trophy-grid .trophy').forEach(x => x.classList.remove('selected'));
             b.classList.add('selected');
-            el.trophyDesc.textContent = `${tr.icon} ${trophyName(tr)}: ${trophyDesc(tr)}${has ? ' ✅' : ''}`;
+            const progress = !has && tr.goal ? ` (${tr.goal(p.stats).join(' / ')})` : '';
+            el.trophyDesc.textContent = `${tr.icon} ${trophyName(tr)}: ${trophyDesc(tr)}${has ? ' ✅' : progress}`;
         };
         el.trophyGrid.appendChild(b);
     });
@@ -1161,6 +1344,20 @@ function finishGame() {
     p.stats.stars += stars;
     p.stats.bestScore = Math.max(p.stats.bestScore, game.score);
     p.stats.bestStreak = Math.max(p.stats.bestStreak, game.bestStreak);
+    p.stats.points += game.score;
+    game.results.forEach(r => { if (r.solved) p.stats.ops[r.q.op]++; });
+
+    // Days played, and days in a row
+    const now = new Date();
+    const dayKey = d => `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    const today = dayKey(now);
+    if (p.stats.lastDay !== today) {
+        const yesterday = dayKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1));
+        p.stats.dayStreak = p.stats.lastDay === yesterday ? p.stats.dayStreak + 1 : 1;
+        p.stats.bestDayStreak = Math.max(p.stats.bestDayStreak, p.stats.dayStreak);
+        p.stats.days++;
+        p.stats.lastDay = today;
+    }
 
     // Remember tricky facts for future games; forget ones solved on the first try
     const tricky = [];
@@ -1179,14 +1376,18 @@ function finishGame() {
     const prog = courseProgress(p, s);
     let courseCompleted = false;
     let doneBefore = null;
+    let coursePct = 0;
     if (prog.tracked) {
         doneBefore = prog.done;
         game.results.forEach(r => {
             const i = prog.course.index.get(r.q.key);
             if (i !== undefined) setBit(prog.bits, i);
         });
-        if (countBits(prog.bits, prog.course.total) >= prog.course.total) {
+        coursePct = countBits(prog.bits, prog.course.total) / prog.course.total;
+        if (coursePct >= 1) {
             courseCompleted = true;
+            p.stats.courses++;
+            if (!p.stats.ranges.includes(prog.course.key)) p.stats.ranges.push(prog.course.key);
             saveCourseBits(p, prog.course, new Uint8Array(prog.bits.length), prog.cycles + 1);
         } else {
             saveCourseBits(p, prog.course, prog.bits, prog.cycles);
@@ -1202,10 +1403,15 @@ function finishGame() {
         rounds: game.round,
         newBest,
         courseCompleted,
+        coursePct,
+        score: game.score,
+        stars,
+        weekend: now.getDay() === 0 || now.getDay() === 6,
     };
     const earned = TROPHIES.filter(tr => !p.trophies[tr.id] && tr.test(ctx));
     earned.forEach(tr => { p.trophies[tr.id] = new Date().toISOString(); });
     saveStore();
+    addBackup();
 
     // Title & stars
     $('#res-title').textContent = t('title' + stars);
@@ -1227,6 +1433,17 @@ function finishGame() {
             `<div class="trophy" style="animation-delay:${1 + i * 0.3}s"><span class="ti">${tr.icon}</span>${trophyName(tr)}</div>`).join('')}</div>`
         : '';
 
+    // The closest trophy still to win, e.g. "🎈 25 Correct 18 / 25"
+    const next = TROPHIES
+        .filter(tr => tr.goal && !p.trophies[tr.id])
+        .map(tr => { const [cur, target] = tr.goal(p.stats); return { tr, cur, target, k: cur / target }; })
+        .sort((a, b) => b.k - a.k)[0];
+    $('#res-next').innerHTML = next
+        ? `<span class="muted">${t('nextTrophy')}</span> <b>${next.tr.icon} ${trophyName(next.tr)}</b>
+           <div class="course-bar"><div style="width:${(100 * next.k).toFixed(1)}%"></div></div>
+           <small class="muted">${trophyDesc(next.tr)} · ${next.cur} / ${next.target}</small>`
+        : '';
+
     const resCourse = $('#res-course');
     resCourse.hidden = !prog.tracked;
     if (prog.tracked) renderCourse(resCourse, courseProgress(p, s), s, { before: doneBefore, completed: courseCompleted });
@@ -1241,7 +1458,9 @@ function finishGame() {
     sfx.fanfare();
     confetti(stars === 3 || courseCompleted ? 220 : 120);
     if (courseCompleted) later(1500, () => confetti(220));
-    earned.forEach((tr, i) => later(1200 + i * 900, () => { toast(tr); sfx.trophy(); }));
+    // Pop up the first 3 new trophies, then one "+N more" (all of them are listed on the screen)
+    earned.slice(0, 3).forEach((tr, i) => later(1200 + i * 900, () => { toast(tr); sfx.trophy(); }));
+    if (earned.length > 3) later(1200 + 3 * 900, () => { toast({ icon: '🏆', more: earned.length - 3 }); sfx.trophy(); });
 }
 
 function countUp(node, target) {
@@ -1259,13 +1478,13 @@ function countUp(node, target) {
 function toast(tr) {
     const div = document.createElement('div');
     div.className = 'toast';
-    div.innerHTML = `<span class="ti">${tr.icon}</span><span>${t('trophyWon')}<br>${trophyName(tr)}</span>`;
+    div.innerHTML = `<span class="ti">${tr.icon}</span><span>${t('trophyWon')}<br>${tr.more ? `+${tr.more}` : trophyName(tr)}</span>`;
     div.addEventListener('animationend', () => div.remove());
     el.toasts.appendChild(div);
 }
 
 $('#btn-again').onclick = startGame;
-$('#btn-home').onclick = () => { renderHome(); showScreen('home'); };
+$('#btn-home').onclick = () => { session++; renderHome(); showScreen('home'); }; // session++ stops pending pop-ups
 $('#btn-play').onclick = startGame;
 
 // ---------- Confetti ----------
@@ -1342,6 +1561,7 @@ function openSettings() {
     $('.speak-lang').hidden = !s.speak || !canSpeak;
     $('#set-speak').closest('label').hidden = !canSpeak;
     $('#settings-error').textContent = '';
+    renderBackupList();
     el.settingsModal.hidden = false;
 }
 
@@ -1454,9 +1674,20 @@ $('#btn-save-player').onclick = () => {
     renderHome();
 };
 
+// A sum a 2nd grader can't do yet, so kids can't wipe their progress by accident
+function parentCheck(question) {
+    const a = rand(12, 19), b = rand(12, 19);
+    const answer = prompt(t('parentGate', question, a, b));
+    if (answer === null) return false;
+    if (parseInt(answer, 10) === a * b) return true;
+    alert(t('gateWrong'));
+    return false;
+}
+
 $('#btn-reset-player').onclick = () => {
     const p = editingPlayer;
-    if (!p || !confirm(t('confirmReset', p.name))) return;
+    if (!p || !parentCheck(t('confirmReset', p.name))) return;
+    addBackup(true);
     const fresh = newPlayer(p.name, p.avatar);
     p.stats = fresh.stats;
     p.trophies = fresh.trophies;
@@ -1470,7 +1701,8 @@ $('#btn-reset-player').onclick = () => {
 $('#btn-delete-player').onclick = () => {
     const p = editingPlayer;
     if (!p || store.players.length < 2) return;
-    if (!confirm(t('confirmDelete', p.name))) return;
+    if (!parentCheck(t('confirmDelete', p.name))) return;
+    addBackup(true);
     store.players = store.players.filter(x => x.id !== p.id);
     store.current = store.players[0].id;
     saveStore();
@@ -1479,6 +1711,83 @@ $('#btn-delete-player').onclick = () => {
 };
 
 $('#btn-edit-player').onclick = () => openPlayerModal(player());
+
+// ---------- Backups ----------
+const fmtDate = iso => new Date(iso).toLocaleString(lang === 'hr' ? 'hr-HR' : 'en-GB',
+    { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+function backupSummary(data) {
+    return data.players.map(pl => `${pl.avatar} ${pl.name} (${pl.stats.games})`).join(', ');
+}
+
+function renderBackupList() {
+    const select = $('#backup-list');
+    const list = readBackups().map(b => ({ b, data: parseStore(b.data) })).filter(x => x.data).reverse();
+    select.innerHTML = list.length
+        ? list.map(({ b, data }) => `<option value="${b.t}">${fmtDate(b.t)} · ${escapeHtml(backupSummary(data))}</option>`).join('')
+        : `<option value="">${t('noBackups')}</option>`;
+    $('#btn-backup-restore').disabled = !list.length;
+}
+
+function applyStore(data) {
+    store.players = data.players;
+    store.current = data.players.some(p => p.id === data.current) ? data.current : data.players[0].id;
+    if (I18N[data.lang]) { lang = data.lang; store.lang = lang; }
+    saveStore();
+    applyLanguage();
+}
+
+$('#btn-backup-restore').onclick = () => {
+    const entry = readBackups().find(b => b.t === $('#backup-list').value);
+    const data = entry && parseStore(entry.data);
+    if (!data || !parentCheck(t('confirmRestore', fmtDate(entry.t)))) return;
+    addBackup(true);
+    applyStore(data);
+    el.settingsModal.hidden = true;
+    alert(t('backupLoaded'));
+};
+
+$('#btn-backup-save').onclick = async () => {
+    const stamp = new Date().toISOString().slice(0, 10);
+    const payload = JSON.stringify({ app: 'math-game', version: 2, savedAt: new Date().toISOString(), store });
+    // On phones, offer the share sheet (Viber, Drive, e-mail…); elsewhere just download the file
+    if (matchMedia('(pointer: coarse)').matches && navigator.canShare) {
+        const file = new File([payload], `math-game-backup-${stamp}.txt`, { type: 'text/plain' });
+        if (navigator.canShare({ files: [file] })) {
+            try {
+                await navigator.share({ files: [file], title: 'Math Game backup' });
+                return;
+            } catch (e) {
+                if (e.name === 'AbortError') return;
+            }
+        }
+    }
+    const url = URL.createObjectURL(new Blob([payload], { type: 'application/json' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `math-game-backup-${stamp}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+};
+
+$('#btn-backup-load').onclick = () => $('#backup-file').click();
+
+$('#backup-file').onchange = async e => {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    let payload = null;
+    try { payload = JSON.parse(await file.text()); } catch (err) { /* not JSON */ }
+    const data = payload && parseStore(payload.store || payload);
+    if (!data) { alert(t('backupBad')); return; }
+    if (!confirm(t('confirmLoad', payload.savedAt ? fmtDate(payload.savedAt) : file.name, data.players.length))) return;
+    addBackup(true);
+    applyStore(data);
+    el.settingsModal.hidden = true;
+    alert(t('backupLoaded'));
+};
 
 // Close buttons and backdrop clicks for modals
 $$('[data-close]').forEach(b => { b.onclick = () => { b.closest('.overlay').hidden = true; }; });

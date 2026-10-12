@@ -113,6 +113,7 @@
             <div class="stats-row" id="res-stats"></div>
             <div class="course-card inset" id="res-course"></div>
             <div class="new-trophies" id="res-trophies"></div>
+            <div class="next-trophy" id="res-next"></div>
             <div class="tricky" id="res-tricky"></div>
             <div class="btn-row">
                 <button class="btn btn-secondary" id="btn-home" data-i18n="home">🏠 Home</button>
@@ -210,6 +211,21 @@
 
         <p class="error" id="settings-error"></p>
         <button class="btn btn-primary wide" id="btn-save-settings" data-i18n="save">Save</button>
+
+        <div class="setting backup">
+            <label data-i18n="backupTitle">💾 Backup (all players)</label>
+            <p class="hint" data-i18n="backupInfo"></p>
+            <div class="btn-pair">
+                <button type="button" class="btn btn-secondary small" id="btn-backup-save" data-i18n="backupSave">Save backup</button>
+                <button type="button" class="btn btn-secondary small" id="btn-backup-load" data-i18n="backupLoad">Load backup</button>
+            </div>
+            <input type="file" id="backup-file" accept=".json,.txt,application/json,text/plain" hidden>
+            <label for="backup-list" data-i18n="autoBackups">Automatic backups</label>
+            <div class="backup-row">
+                <select id="backup-list"></select>
+                <button type="button" class="btn btn-secondary small" id="btn-backup-restore" data-i18n="restore">Restore</button>
+            </div>
+        </div>
     </div>
 </div>
 

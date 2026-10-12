@@ -12,7 +12,7 @@ A friendly math practice game for elementary school kids. It's built to feel lik
 4. The timer bar runs down. When time is up, whatever has been typed is checked. If nothing was typed, the question counts as missed.
 5. After a mistake the correct answer is shown for a moment, so the child can learn it.
 6. **Rounds:** every question that was wrong or missed goes into the next round. Rounds repeat until all questions are solved.
-7. At the end the child sees stars, points, new trophies, and a list of the "tricky ones" to remember.
+7. At the end the child sees stars, points, new trophies, the next trophy to aim for, and a list of the "tricky ones" to remember. **▶ Next game** continues with the next session.
 
 ## Features
 
@@ -24,7 +24,7 @@ A friendly math practice game for elementary school kids. It's built to feel lik
 - 🗣️ **Read questions aloud** in English, Bosnian/Croatian/Serbian or German, using the device's built‑in voice. The timer starts after the question has been read.
 - ⭐ **Points.** Each correct answer earns 10 points, plus a speed bonus of up to 5 and a streak combo of up to 5. Correct answers in fix‑up rounds earn 5.
 - 🌟 **1–3 stars** per game, based on how many questions were right on the first try.
-- 🏆 **14 trophies** to collect, e.g. *Perfect!*, *On Fire* (5 in a row), *Lightning*, *Never Give Up*, *Math Wizard*.
+- 🏆 **46 trophies**, from easy to hard, so there's almost always something to win: *Hat Trick* (3 in a row), *Little Star*, *Good Listener*, *Halfway* through a range, *3 Days in a Row*, *Plus Pro*, … up to *Legend* (50 games) and *To the Moon* (5000 points). The results screen shows the closest trophy still to win (e.g. "🎈 25 Correct · 18 / 25"), and tapping a trophy on the home screen shows its progress.
 - 👧👦 **Several players.** Each child has their own name, animal avatar, settings, best score and trophies.
 - 📱 **Mobile‑friendly**, with a big on‑screen number keypad (no phone keyboard popping up). On a computer the keyboard works too.
 - 🎉 Animations, confetti and sounds (sounds can be turned off). Animations are reduced automatically when the device asks for less motion.
@@ -90,7 +90,15 @@ It's a static site (`index.html`, `styles.css`, `script.js`) with no build step.
 
   Because of the offline cache, after editing a file you may need to reload twice (or use a hard reload) to see the change.
 
-Progress (players, settings, scores, trophies) is saved in the browser's local storage on each device. To start a player over, tap their name (or ✏️) → **↺ Reset progress**. This clears scores, stars, trophies and saved mistakes, and keeps the name and settings.
+Progress (players, settings, scores, trophies) is saved in the browser's local storage on each device. To start a player over, tap their name (or ✏️) → **↺ Reset progress**. This clears scores, stars, trophies, saved mistakes and task progress, and keeps the name and settings.
+
+### Keeping progress safe
+
+- **Parent check:** resetting, deleting a player or restoring a backup asks for a multiplication like 14 × 17, so a child can't wipe progress by accident.
+- **Automatic backups:** after games (one per day) and before every reset, delete or restore, the game keeps a copy on the device (the last 10). You can go back to one in ⚙️ → *Backup*. If the saved data is ever damaged, the game recovers the newest good copy by itself.
+- **Backup file:** ⚙️ → *Backup* → **⬇ Save backup** saves all players to a file. On a phone it opens the share menu, so you can send it to yourself on Viber or put it on Drive. **⬆ Load backup** restores it, on the same or another device. This is the only thing that survives clearing the browser's data.
+- **Persistent storage:** the game asks the browser not to clear its data when the device is low on space.
+- **One place per device:** the installed app and the browser share progress. A link opened *inside* Viber/WhatsApp, a different browser or private mode has its own separate, empty progress, so open the installed app instead.
 
 ## Technologies
 
