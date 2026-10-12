@@ -866,10 +866,17 @@ const el = {
 };
 
 let currentScreen = 'home';
+let updateReady = false; // a new version was installed in the background
+
+function reloadIfIdle() {
+    const modalOpen = !el.settingsModal.hidden || !el.playerModal.hidden;
+    if (updateReady && currentScreen === 'home' && !modalOpen) location.reload();
+}
 
 function showScreen(name) {
     Object.entries(el.screens).forEach(([key, screen]) => screen.classList.toggle('active', key === name));
     currentScreen = name;
+    if (name === 'home') setTimeout(reloadIfIdle, 0);
     window.scrollTo(0, 0);
     if (document.activeElement) document.activeElement.blur();
 }
@@ -1848,4 +1855,12 @@ applyLanguage();
 // Offline support: cache the game so it also works without internet
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+
+    // When a new version of the game takes over, reload to show it, but never in the middle of a game
+    const hadController = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!hadController) return; // first install, nothing old to replace
+        updateReady = true;
+        reloadIfIdle();
+    });
 }

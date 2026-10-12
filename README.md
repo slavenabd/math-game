@@ -66,7 +66,7 @@ How questions are made:
 
 On a phone, open the game in the browser and choose **Share → Add to Home Screen** (iPhone) or **⋮ → Install app / Add to Home screen** (Android). It gets an owl icon and opens full screen like an app.
 
-After the first visit the game also works **without internet**, e.g. in the car. A service worker (`sw.js`) keeps a copy of the files. After you publish an update, devices pick it up in the background and show the new version on the next visit.
+After the first visit the game also works **without internet**, e.g. in the car. A service worker (`sw.js`) keeps a copy of the files. With internet the game always loads the newest files, so after you publish an update it shows the next time the game is opened. An open installed app reloads by itself when it's back on the home screen, never during a game. The saved copy is only used offline or on a very slow connection.
 
 ## Privacy
 
@@ -87,8 +87,6 @@ It's a static site (`index.html`, `styles.css`, `script.js`) with no build step.
   node server.js
   ```
   Then open `http://localhost:5000`.
-
-  Because of the offline cache, after editing a file you may need to reload twice (or use a hard reload) to see the change.
 
 Progress (players, settings, scores, trophies) is saved in the browser's local storage on each device. To start a player over, tap their name (or ✏️) → **↺ Reset progress**. This clears scores, stars, trophies, saved mistakes and task progress, and keeps the name and settings.
 

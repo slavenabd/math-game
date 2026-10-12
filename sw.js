@@ -1,7 +1,8 @@
 // Service worker: lets the game load and play without internet.
-// Files are served from the cache right away and refreshed in the background,
-// so after an update the new version shows up on the next visit.
-const CACHE = 'math-game-v1';
+// With internet, files always come fresh from the server (so updates show right away);
+// the cached copy is only used when the network is down or too slow.
+const CACHE = 'math-game-v2';
+const NETWORK_TIMEOUT_MS = 4000;
 const FILES = [
     './',
     'index.html',
@@ -17,7 +18,7 @@ const FILES = [
 ];
 
 self.addEventListener('install', event => {
-    event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)));
+    event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES.map(f => new Request(f, { cache: 'reload' })))));
     self.skipWaiting();
 });
 
@@ -33,16 +34,24 @@ self.addEventListener('fetch', event => {
     const req = event.request;
     if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
 
-    event.respondWith(caches.open(CACHE).then(async cache => {
-        const cached = await cache.match(req, { ignoreSearch: true })
-            || (req.mode === 'navigate' ? await cache.match('index.html') : undefined);
-        const fresh = fetch(req)
-            .then(res => {
-                if (res.ok) cache.put(req, res.clone());
-                return res;
-            })
-            .catch(() => cached);
-        event.waitUntil(fresh.catch(() => {}));
-        return cached || fresh;
-    }));
+    event.respondWith((async () => {
+        const cache = await caches.open(CACHE);
+        const fromCache = async () => (await cache.match(req, { ignoreSearch: true }))
+            || (req.mode === 'navigate' ? cache.match('index.html') : undefined);
+
+        // 'no-cache' makes the browser check with the server instead of reusing its own copy
+        const network = fetch(req, { cache: 'no-cache' }).then(res => {
+            if (res.ok) cache.put(req, res.clone());
+            return res;
+        });
+        network.catch(() => {}); // handled below
+        const timeout = new Promise(resolve => setTimeout(resolve, NETWORK_TIMEOUT_MS));
+        try {
+            const res = await Promise.race([network, timeout]);
+            if (res) return res;
+            return (await fromCache()) || network; // slow network: use the copy, keep waiting otherwise
+        } catch (e) {
+            return (await fromCache()) || Response.error(); // offline
+        }
+    })());
 });
